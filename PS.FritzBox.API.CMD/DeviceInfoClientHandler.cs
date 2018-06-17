@@ -1,4 +1,5 @@
 ﻿using PS.FritzBox.API;
+using PS.FritzBox.API.TR64.DeviceInfo;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +10,11 @@ namespace PS.FritzBox.API.CMD
 {
     public class DeviceInfoClientHandler : ClientHandler
     {
-        DeviceInfoClient _client;
+        DeviceInfoService _client;
 
         public DeviceInfoClientHandler(ConnectionSettings settings, Action<string> printOutput, Func<string> getInput, Action wait, Action clearOutput) : base(settings, printOutput, getInput, wait, clearOutput)
         {
-            this._client = new DeviceInfoClient(settings);
+            this._client = new DeviceInfoService(settings);
         }
 
         /// <summary>
@@ -74,7 +75,7 @@ namespace PS.FritzBox.API.CMD
             
             this.ClearOutputAction();
             base.PrintEntry();
-            DeviceInfo info = this._client.GetDeviceInfoAsync().GetAwaiter().GetResult();
+            var info = this._client.GetInfoAsync().GetAwaiter().GetResult();
             base.PrintObject(info);
         }
 
@@ -87,8 +88,7 @@ namespace PS.FritzBox.API.CMD
             base.PrintEntry();
 
             var log = this._client.GetDeviceLogAsync().GetAwaiter().GetResult();
-            foreach (var entry in log)
-                this.PrintOutputAction(entry);
+            this.PrintObject(log);
         }
 
         /// <summary>
@@ -98,8 +98,8 @@ namespace PS.FritzBox.API.CMD
         {
             this.ClearOutputAction();            
             base.PrintEntry();
-            UInt16 secPort = this._client.GetSecurityPortAsync().GetAwaiter().GetResult();
-            this.PrintOutputAction($"SecurityPort: {secPort}");
+            var secPort = this._client.GetSecurityPortAsync().GetAwaiter().GetResult();
+            this.PrintOutputAction($"SecurityPort: {secPort.SecurityPort}");
         }
     }
 }

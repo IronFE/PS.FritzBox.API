@@ -1,13 +1,14 @@
-﻿using System;
+﻿using PS.FritzBox.API.TR64.UserInterface;
+using System;
 
 namespace PS.FritzBox.API.CMD
 {
     internal class UserInterfaceClientHandler : ClientHandler
     {
-        UserInterfaceClient _client;
+        UserInterfaceService _client;
         public UserInterfaceClientHandler(ConnectionSettings settings, Action<string> printOutput, Func<string> getInput, Action wait, Action clearOutput) : base(settings, printOutput, getInput, wait, clearOutput)
         {
-            this._client = new UserInterfaceClient(settings);
+            this._client = new UserInterfaceService(settings);
         }
 
         public override void Handle()
@@ -65,7 +66,7 @@ namespace PS.FritzBox.API.CMD
         {
             this.ClearOutputAction();
             this.PrintEntry();
-            var info = this._client.GetUpdateInfoAsync().GetAwaiter().GetResult();
+            var info = this._client.X_GetInfoAsync().GetAwaiter().GetResult();
 
             this.PrintObject(info);
 

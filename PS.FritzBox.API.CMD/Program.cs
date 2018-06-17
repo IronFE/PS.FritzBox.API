@@ -84,7 +84,7 @@ namespace PS.FritzBox.API.CMD
         static void Configure(FritzDevice device)
         {
             ConnectionSettings settings = GetConnectionSettings();
-            device.GetServiceClient<DeviceInfoClient>(settings);
+            settings.BaseUrl = device.GetBaseUrl().GetAwaiter().GetResult();
             InitClientHandler(settings);
         }
 

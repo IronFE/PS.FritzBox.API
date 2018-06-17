@@ -184,7 +184,7 @@ namespace PS.FritzBox.API.TR64.WANDevice.WANConnectionDevice.WANPPPConnection
         /// <summary>
         /// method to invoke ForceTermination on service
         /// </summary>
-        public async Task ForceTermination()
+        public async Task ForceTerminationAsync()
         {
             await base.InvokeAsync("ForceTermination", null);
         }
@@ -192,7 +192,7 @@ namespace PS.FritzBox.API.TR64.WANDevice.WANConnectionDevice.WANPPPConnection
         /// <summary>
         /// method to invoke RequestConnection on service
         /// </summary>
-        public async Task RequestConnection()
+        public async Task RequestConnectionAsync()
         {
             await base.InvokeAsync("RequestConnection", null);
         }

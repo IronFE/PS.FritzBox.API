@@ -1,14 +1,15 @@
-﻿using System;
+﻿using PS.FritzBox.API.TR64.X_AppSetup;
+using System;
 
 namespace PS.FritzBox.API.CMD
 {
     public class AppSetupClientHandler : ClientHandler
     {
-        AppSetupClient _client;
+        X_AppSetupService _client;
 
         public AppSetupClientHandler(ConnectionSettings settings, Action<string> printOutput, Func<string> getInput, Action wait, Action clearOutput) : base(settings, printOutput, getInput, wait, clearOutput)
         {
-            _client = new AppSetupClient(settings);
+            _client = new X_AppSetupService(settings);
         }
 
         public override void Handle()

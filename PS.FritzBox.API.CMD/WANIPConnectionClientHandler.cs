@@ -1,4 +1,4 @@
-﻿using PS.FritzBox.API.WANDevice.WANConnectionDevice;
+﻿using PS.FritzBox.API.TR64.WANDevice.WANConnectionDevice.WANIPConnection;
 using System;
 using System.Net;
 
@@ -6,11 +6,11 @@ namespace PS.FritzBox.API.CMD
 {
     public class WANIPConnectonClientHandler : ClientHandler
     {
-        WANIPConnectionClient _client;
+        WANIPConnectionService _client;
 
         public WANIPConnectonClientHandler(ConnectionSettings settings, Action<string> printOutput, Func<string> getInput, Action wait, Action clearOutput) : base(settings, printOutput, getInput, wait, clearOutput)
         {
-            _client = new WANIPConnectionClient(settings);
+            _client = new WANIPConnectionService(settings);
         }
 
         public override void Handle()
@@ -39,10 +39,7 @@ namespace PS.FritzBox.API.CMD
                     switch (input)
                     {
                         case "1":
-                            this.ForceTermination();
-                            break;
-                        case "2":
-                            this.RequestTermination();
+                            this.ForceTermination();                           
                             break;
                         case "3":
                             this.RequestConnection();
@@ -89,14 +86,6 @@ namespace PS.FritzBox.API.CMD
             this.PrintOutputAction("Termination forced");
         }
 
-        private void RequestTermination()
-        {
-            this.ClearOutputAction();
-            this.PrintEntry();
-            this._client.RequestTerminationAsync().GetAwaiter().GetResult();
-            this.PrintOutputAction("Termination forced");
-        }
-
         private void RequestConnection()
         {
             this.ClearOutputAction();
@@ -110,9 +99,8 @@ namespace PS.FritzBox.API.CMD
         {
             this.ClearOutputAction();
             this.PrintEntry();
-            var dnsServers = this._client.GetDNSServersAsync().GetAwaiter().GetResult();
-            foreach (var dnsServer in dnsServers)
-                this.PrintOutputAction(dnsServer.ToString());
+            var dnsServers = this._client.X_GetDNSServersAsync().GetAwaiter().GetResult();
+            this.PrintObject(dnsServers);
         }
 
         private void GetExternalIPAddress()

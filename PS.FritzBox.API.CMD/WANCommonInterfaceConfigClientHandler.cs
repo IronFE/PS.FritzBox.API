@@ -1,14 +1,15 @@
-﻿using System;
+﻿using PS.FritzBox.API.TR64.WANDevice.WANCommonInterfaceConfig;
+using System;
 
 namespace PS.FritzBox.API.CMD
 {
     public class WANCommonInterfaceConfigClientHandler : ClientHandler
     {
-        WANDevice.WANCommonInterfaceConfigClient _client;
+        WANCommonInterfaceConfigService _client;
 
         public WANCommonInterfaceConfigClientHandler(ConnectionSettings settings, Action<string> printOutput, Func<string> getInput, Action wait, Action clearOutput) : base(settings, printOutput, getInput, wait, clearOutput)
         {
-            this._client = new WANDevice.WANCommonInterfaceConfigClient(settings);
+            this._client = new WANCommonInterfaceConfigService(settings);
         }
 
         public override void Handle()
@@ -59,11 +60,15 @@ namespace PS.FritzBox.API.CMD
             this.ClearOutputAction();
             this.PrintEntry();
             this.PrintOutputAction("Groupindex: ");
-            if (!UInt16.TryParse(this.GetInputFunc(), out UInt16 groupIndex))
+            if (!Int32.TryParse(this.GetInputFunc(), out Int32 groupIndex))
                 this.PrintOutputAction("Invalid group index");
             else
             {
-                var monitor = _client.GetOnlineMonitorAsync(groupIndex).GetAwaiter().GetResult();
+                X_GetOnlineMonitorRequest request = new X_GetOnlineMonitorRequest()
+                {
+                    SyncGroupIndex = groupIndex
+                };
+                var monitor = _client.X_GetOnlineMonitorAsync(request).GetAwaiter().GetResult();
                 this.PrintObject(monitor);
             }
         }

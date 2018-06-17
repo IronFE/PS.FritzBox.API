@@ -1,7 +1,8 @@
 ﻿using PS.FritzBox.API.Base;
-using PS.FritzBox.API.LANDevice;
-using PS.FritzBox.API.WANDevice;
-using PS.FritzBox.API.WANDevice.WANConnectionDevice;
+using PS.FritzBox.API.TR64.DeviceInfo;
+using PS.FritzBox.API.TR64.LANDevice;
+using PS.FritzBox.API.TR64.WANDevice;
+using PS.FritzBox.API.TR64.WANDevice.WANConnectionDevice;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -133,25 +134,15 @@ namespace PS.FritzBox.API
         }
 
         /// <summary>
-        /// Method to get service client
+        /// Method to get the base url
         /// </summary>
-        /// <typeparam name="T">type param</typeparam>
-        /// <param name="settings">connection settings</param>
         /// <returns>the service client</returns>
-        public async Task<T> GetServiceClient<T>(ConnectionSettings settings)
+        public async Task<string> GetBaseUrl()
         {
-            if (!this.ContainsService<T>())
-                throw new ApplicationException("Given service not is not available on the device.");
-
-            if (String.IsNullOrEmpty(settings.BaseUrl))
-            {
-                settings.BaseUrl = $"http://{this.IPAddress}:{this.Port}";
-                // get the security port
-                int port = await new DeviceInfoClient(settings.BaseUrl, settings.Timeout).GetSecurityPortAsync();
-                settings.BaseUrl = $"https://{this.IPAddress}:{port}";
-            }
-            
-            return (T)Activator.CreateInstance(typeof(T), settings);
+            string baseUrl = $"http://{this.IPAddress}:{this.Port}";
+            // get the security port
+            GetSecurityPortResult result = await new DeviceInfoService(baseUrl, 10000).GetSecurityPortAsync();
+            return $"https://{this.IPAddress}:{result.SecurityPort}";
         }
 
         /// <summary>
@@ -174,41 +165,9 @@ namespace PS.FritzBox.API
                 this.ModelDescription = this.GetElementValue(deviceRoot, "modelDescription");
                 this.ModelNumber = this.GetElementValue(deviceRoot, "modelNumber");
                 this.UDN = this.GetElementValue(deviceRoot, "UDN");
-
-                // iterate through the services and check for available services
-                IEnumerable<XElement> serviceElements = this.GetServices(deviceRoot);
-                this.AppendServices(serviceElements);
             }
         }
-
-        /// <summary>
-        /// Method to get the service elements
-        /// </summary>
-        /// <param name="deviceRoot"></param>
-        /// <returns></returns>
-        private IEnumerable<XElement> GetServices(XElement deviceRoot)
-        {
-            List<XElement> services = new List<XElement>();
-            string deviceName = this.GetElementValue(deviceRoot, "friendlyName");
-            XElement deviceList = this.GetElement(deviceRoot, "deviceList");
-            if (deviceList != null)
-            {
-                IEnumerable<XElement> deviceElements = this.GetElements(deviceList, "device");
-                foreach (XElement deviceElement in deviceElements)
-                    services.AddRange(this.GetServices(deviceElement));
-            }
-
-            
-            XElement serviceList = this.GetElement(deviceRoot, "serviceList");
-            IEnumerable<XElement> serviceElements = this.GetElements(serviceList, "service");
-            foreach (XElement serviceElement in serviceElements)
-            {
-                services.Add(serviceElement);
-            }
-
-            return services;
-        }
-
+               
         /// <summary>
         /// Mehtod to get an element
         /// </summary>
@@ -241,61 +200,6 @@ namespace PS.FritzBox.API
         {
             return parent.Elements(parent.Document.Root.Name.Namespace + key);
         }
-
-        /// <summary>
-        /// Method to append found services
-        /// </summary>
-        /// <param name="serviceElements">the service elements</param>
-        private void AppendServices(IEnumerable<XElement> serviceElements)
-        {
-            foreach(XElement serviceElement in serviceElements)
-            {
-                switch(this.GetElementValue(serviceElement, "serviceType"))
-                {
-                    case "urn:dslforum-org:service:DeviceInfo:1":
-                        this._validServices.Add(typeof(DeviceInfoClient));
-                        break;
-                    case "urn:dslforum-org:service:DeviceConfig:1":
-                        this._validServices.Add(typeof(DeviceConfigClient));
-                        break;
-                    case "urn:dslforum-org:service:Layer3Forwarding:1":
-                        this._validServices.Add(typeof(Layer3ForwardingClient));
-                        break;
-                    case "urn:dslforum-org:service:LANConfigSecurity:1":
-                        this._validServices.Add(typeof(LANConfigSecurityClient));
-                        break;
-                    case "urn:dslforum-org:service:Time:1":
-                        this._validServices.Add(typeof(TimeServiceClient));
-                        break;
-                    case "urn:dslforum-org:service:UserInterface:1":
-                        this._validServices.Add(typeof(UserInterfaceClient));
-                        break;
-                    case "urn:dslforum-org:service:X_AVM-DE_AppSetup:1":
-                        this._validServices.Add(typeof(AppSetupClient));
-                        break;
-                    case "urn:dslforum-org:service:WLANConfiguration:1":
-                        this._validServices.Add(typeof(WLANConfigurationClient));
-                        break;
-                    case "urn:dslforum-org:service:Hosts:1":
-                        this._validServices.Add(typeof(HostsClient));
-                        break;
-                    case "urn:dslforum-org:service:LANEthernetInterfaceConfig:1":
-                        this._validServices.Add(typeof(LANEthernetInterfaceClient));
-                        break;
-                    case "urn:dslforum-org:service:LANHostConfigManagement:1":
-                        this._validServices.Add(typeof(LANHostConfigManagementClient));
-                        break;
-                    case "urn:dslforum-org:service:WANCommonInterfaceConfig:1":
-                        this._validServices.Add(typeof(WANCommonInterfaceConfigClient));
-                        break;
-                    case "urn:dslforum-org:service:WANPPPConnection:1":
-                        this._validServices.Add(typeof(WANPPPConnectionClient));
-                        break;
-                    case "urn:dslforum-org:service:WANIPConnection:1":
-                        this._validServices.Add(typeof(WANIPConnectionClient));
-                        break;
-                }
-            }
-        }
+               
     }
 }

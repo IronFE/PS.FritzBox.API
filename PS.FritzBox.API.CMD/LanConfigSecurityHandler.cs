@@ -1,14 +1,15 @@
-﻿using System;
+﻿using PS.FritzBox.API.TR64.LANConfigSecurity;
+using System;
 
 namespace PS.FritzBox.API.CMD
 {
     public class LanConfigSecurityHandler : ClientHandler
     {
-        LANConfigSecurityClient _client;
+        LANConfigSecurityService _client;
 
         public LanConfigSecurityHandler(ConnectionSettings settings, Action<string> printOutput, Func<string> getInput, Action wait, Action clearOutput) : base(settings, printOutput, getInput, wait, clearOutput)
         {
-            this._client = new LANConfigSecurityClient(settings);
+            this._client = new LANConfigSecurityService(settings);
         }
 
         public override void Handle()
@@ -66,15 +67,15 @@ namespace PS.FritzBox.API.CMD
         {
             this.ClearOutputAction();
             this.PrintEntry();
-            var anonymousLogin = this._client.GetAnonymousLoginAsync().GetAwaiter().GetResult();
-            this.PrintOutputAction($"AnonymousLogin: {anonymousLogin}");
+            var anonymousLogin = this._client.X_GetAnonymousLoginAsync().GetAwaiter().GetResult();
+            this.PrintOutputAction($"AnonymousLogin: {anonymousLogin.AnonymousLoginEnabled}");
         }
 
         private void GetCurrentUser()
         {
             this.ClearOutputAction();
             this.PrintEntry();
-            var currentUser = this._client.GetCurrentUserAsync().GetAwaiter().GetResult();
+            var currentUser = this._client.X_GetCurrentUserAsync().GetAwaiter().GetResult();
             this.PrintObject(currentUser);
         }
 
@@ -91,7 +92,11 @@ namespace PS.FritzBox.API.CMD
             this.ClearOutputAction();
             this.PrintEntry();
             this.PrintOutputAction("New password:");
-            this._client.SetConfigPasswordAsync(this.GetInputFunc()).GetAwaiter().GetResult();
+            SetConfigPasswordRequest request = new SetConfigPasswordRequest()
+            {
+                Password = this.GetInputFunc()
+            };
+            this._client.SetConfigPasswordAsync(request).GetAwaiter().GetResult();
             this.PrintOutputAction("Password changed.");
         }
     }

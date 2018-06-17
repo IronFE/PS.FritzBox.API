@@ -16,7 +16,7 @@ namespace PS.FritzBox.API.TR64.DeviceConfig
         /// </summary>	    
         internal X_GenerateUUIDResult(XDocument soapresult)
         {
-            this.UUID = Convert.ToInt32(soapresult.Descendants("NewUUID").First().Value);
+            this.UUID = soapresult.Descendants("NewUUID").First().Value;
         }
 
         #endregion

@@ -128,7 +128,7 @@ namespace PS.FritzBox.API.TR64.DeviceConfig
         /// <summary>
         /// method to invoke FactoryReset on service
         /// </summary>
-        public async Task FactoryReset()
+        public async Task FactoryResetAsync()
         {
             await base.InvokeAsync("FactoryReset", null);
         }
@@ -136,7 +136,7 @@ namespace PS.FritzBox.API.TR64.DeviceConfig
         /// <summary>
         /// method to invoke Reboot on service
         /// </summary>
-        public async Task Reboot()
+        public async Task RebootAsync()
         {
             await base.InvokeAsync("Reboot", null);
         }

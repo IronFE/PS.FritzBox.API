@@ -125,7 +125,7 @@ namespace PS.FritzBox.API.IGD.WANDevice.WANConnectionDevice.WANIPConnection
         /// <summary>
         /// method to invoke RequestConnection on service
         /// </summary>
-        public async Task RequestConnection()
+        public async Task RequestConnectionAsync()
         {
             await base.InvokeAsync("RequestConnection", null);
         }
@@ -133,7 +133,7 @@ namespace PS.FritzBox.API.IGD.WANDevice.WANConnectionDevice.WANIPConnection
         /// <summary>
         /// method to invoke RequestTermination on service
         /// </summary>
-        public async Task RequestTermination()
+        public async Task RequestTerminationAsync()
         {
             await base.InvokeAsync("RequestTermination", null);
         }
@@ -141,7 +141,7 @@ namespace PS.FritzBox.API.IGD.WANDevice.WANConnectionDevice.WANIPConnection
         /// <summary>
         /// method to invoke ForceTermination on service
         /// </summary>
-        public async Task ForceTermination()
+        public async Task ForceTerminationAsync()
         {
             await base.InvokeAsync("ForceTermination", null);
         }

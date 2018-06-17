@@ -1,15 +1,16 @@
-﻿using System;
+﻿using PS.FritzBox.API.TR64.LANDevice.LANHostConfigManagement;
+using System;
 using System.Net;
 
 namespace PS.FritzBox.API.CMD
 {
     internal class LANHostConfigManagementClientHandler : ClientHandler
     {
-        LANDevice.LANHostConfigManagementClient _client;
+        LANHostConfigManagementService _client;
 
         public LANHostConfigManagementClientHandler(ConnectionSettings settings, Action<string> printOutput, Func<string> getInput, Action wait, Action clearOutput) : base(settings, printOutput, getInput, wait, clearOutput)
         {
-            this._client = new LANDevice.LANHostConfigManagementClient(settings);
+            this._client = new LANHostConfigManagementService(settings);
         }
 
         public override void Handle()
@@ -60,9 +61,6 @@ namespace PS.FritzBox.API.CMD
                             break;
                         case "8":
                             this.SetAddressRange();
-                            break;
-                        case "9":
-                            this.SetDHCPServerEnable();
                             break;
                         case "r":
                             break;
@@ -119,9 +117,8 @@ namespace PS.FritzBox.API.CMD
         {
             this.ClearOutputAction();
             this.PrintEntry();
-            var servers = this._client.GetDNSServerAsync().GetAwaiter().GetResult();
-            foreach (var server in servers)
-                this.PrintOutputAction(server.ToString());
+            var servers = this._client.GetDNSServersAsync().GetAwaiter().GetResult();
+            this.PrintObject(servers);
         }
 
         private void GetIPRouters()
@@ -129,8 +126,7 @@ namespace PS.FritzBox.API.CMD
             this.ClearOutputAction();
             this.PrintEntry();
             var servers = this._client.GetIPRoutersListAsync().GetAwaiter().GetResult();
-            foreach (var server in servers)
-                this.PrintOutputAction(server.ToString());
+            this.PrintObject(servers);
         }
 
         private void SetSubnetMask()
@@ -146,7 +142,11 @@ namespace PS.FritzBox.API.CMD
             }
             else
             {
-                this._client.SetSubnetMaskAsync(address).GetAwaiter().GetResult();
+                SetSubnetMaskRequest request = new SetSubnetMaskRequest()
+                {
+                    SubnetMask = address.ToString()
+                };
+                this._client.SetSubnetMaskAsync(request).GetAwaiter().GetResult();
                 this.PrintOutputAction("subnet mask set");
             }
         }
@@ -166,20 +166,14 @@ namespace PS.FritzBox.API.CMD
             }
             else
             {
-                this._client.SetAddressRangeAsync(min, max).GetAwaiter().GetResult();
+                SetAddressRangeRequest request = new SetAddressRangeRequest()
+                {
+                    MaxAddress = max.ToString(),
+                    MinAddress = min.ToString()
+                };
+                this._client.SetAddressRangeAsync(request).GetAwaiter().GetResult();
                 this.PrintOutputAction("IP range set");
             }
-        }
-
-        private void SetDHCPServerEnable()
-        {
-            this.ClearOutputAction();
-            this.PrintEntry();
-            this.PrintOutputAction("enable state? (1/0)");
-            var enable = this.GetInputFunc() == "1";
-
-            this._client.SetDHCPServerEnableAsync(enable).GetAwaiter().GetResult();
-            this.PrintOutputAction("enabled state changed");
         }
     }
 }

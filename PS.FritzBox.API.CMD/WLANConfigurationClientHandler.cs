@@ -1,4 +1,4 @@
-﻿using PS.FritzBox.API.LANDevice;
+﻿using PS.FritzBox.API.TR64.LANDevice.WLANConfiguration;
 using System;
 using System.Linq;
 
@@ -6,10 +6,10 @@ namespace PS.FritzBox.API.CMD
 {
     internal class WLANConfigurationClientHandler : ClientHandler
     {
-        WLANConfigurationClient _client;
+        WLANConfigurationService _client;
         public WLANConfigurationClientHandler(ConnectionSettings settings, Action<string> printOutput, Func<string> getInput, Action wait, Action clearOutput) : base(settings, printOutput, getInput, wait, clearOutput)
         {
-            this._client = new WLANConfigurationClient(settings);
+            this._client = new WLANConfigurationService(settings);
         }
 
         public override void Handle()
@@ -113,7 +113,7 @@ namespace PS.FritzBox.API.CMD
             this.ClearOutputAction();
             this.PrintEntry();
 
-            var info = this._client.GetWPSInfoAsync().GetAwaiter().GetResult();
+            var info = this._client.X_GetWPSInfoAsync().GetAwaiter().GetResult();
             this.PrintObject(info);
         }
 
@@ -122,7 +122,7 @@ namespace PS.FritzBox.API.CMD
             this.ClearOutputAction();
             this.PrintEntry();
 
-            var info = this._client.GetNightControlAsync().GetAwaiter().GetResult();
+            var info = this._client.X_GetNightControlAsync().GetAwaiter().GetResult();
             this.PrintObject(info);
         }
 
@@ -131,10 +131,17 @@ namespace PS.FritzBox.API.CMD
             this.ClearOutputAction();
             this.PrintEntry();
 
-            foreach(WLANDeviceInfo info in this._client.GetAssociatedDevicesAsync().GetAwaiter().GetResult())
+            var result = this._client.GetTotalAssociationsAsync().GetAwaiter().GetResult();
+
+            for(int i = 0; i < result.TotalAssociations; i++)
             {
-                Console.WriteLine("###########################");
-                this.PrintObject(info);
+                GetGenericAssociatedDeviceInfoRequest request = new GetGenericAssociatedDeviceInfoRequest()
+                {
+                    AssociatedDeviceIndex = i
+                };
+                var entry = this._client.GetGenericAssociatedDeviceInfoAsync(request).GetAwaiter().GetResult();
+
+                this.PrintObject(entry);
             }
         }
 
@@ -143,7 +150,8 @@ namespace PS.FritzBox.API.CMD
             this.ClearOutputAction();
             this.PrintEntry();
 
-            this.PrintOutputAction($"Total associations: {this._client.GetTotalAssociationsAsync().GetAwaiter().GetResult()}");
+            var result = this._client.GetTotalAssociationsAsync().GetAwaiter().GetResult();
+            this.PrintOutputAction($"Total associations: {result.TotalAssociations}");
         }
 
         private void GetBeaconType()
@@ -151,7 +159,9 @@ namespace PS.FritzBox.API.CMD
             this.ClearOutputAction();
             this.PrintEntry();
 
-            this.PrintOutputAction($"Beacon Type: {this._client.GetBeaconTypeAsync().GetAwaiter().GetResult()}");
+            var result = this._client.GetBeaconAdvertisementAsync().GetAwaiter().GetResult();
+
+            this.PrintOutputAction($"Beacon Type: {result.BeaconAdvertisementEnabled}");
         }
 
         private void GetChannelInfo()
@@ -193,9 +203,13 @@ namespace PS.FritzBox.API.CMD
             this.ClearOutputAction();
             this.PrintEntry();
             this.PrintOutputAction("New index:");
-            if (UInt16.TryParse(this.GetInputFunc(), out UInt16 result))
+            if (Int32.TryParse(this.GetInputFunc(), out Int32 result))
             {
-                this._client.SetDefaultWEPKeyIndexAsync(result).GetAwaiter().GetResult();
+                SetDefaultWEPKeyIndexRequest request = new SetDefaultWEPKeyIndexRequest()
+                {
+                    DefaultWEPKeyIndex = result
+                };
+                this._client.SetDefaultWEPKeyIndexAsync(request).GetAwaiter().GetResult();
                 this.PrintOutputAction("New index set");
             }
             else
@@ -207,7 +221,7 @@ namespace PS.FritzBox.API.CMD
             this.ClearOutputAction();
             this.PrintEntry();
 
-            this.PrintOutputAction($"BSSID: {this._client.GetBSSIDAsync().GetAwaiter().GetResult()}");
+            this.PrintOutputAction($"BSSID: {this._client.GetBSSIDAsync().GetAwaiter().GetResult().BSSID}");
         }
 
         private void GetSSID()
@@ -215,7 +229,7 @@ namespace PS.FritzBox.API.CMD
             this.ClearOutputAction();
             this.PrintEntry();
 
-            this.PrintOutputAction($"BSSID: {this._client.GetSSIDAsync().GetAwaiter().GetResult()}");
+            this.PrintOutputAction($"BSSID: {this._client.GetSSIDAsync().GetAwaiter().GetResult().SSID}");
         }
 
         private void SetSSID()
@@ -223,7 +237,12 @@ namespace PS.FritzBox.API.CMD
             this.ClearOutputAction();
             this.PrintEntry();
             this.PrintOutputAction("New SSID:");
-            this._client.SetSSIDAsync(this.GetInputFunc()).GetAwaiter().GetResult();
+            SetSSIDRequest request = new SetSSIDRequest()
+            {
+                SSID = this.GetInputFunc()
+            };
+
+            this._client.SetSSIDAsync(request).GetAwaiter().GetResult();
             this.PrintOutputAction("New SSID set");
         }
 
@@ -233,9 +252,14 @@ namespace PS.FritzBox.API.CMD
             this.PrintEntry();
             var channelInfo = this._client.GetChannelInfoAsync().GetAwaiter().GetResult();
             this.PrintOutputAction("New Channel:");
-            if (UInt16.TryParse(this.GetInputFunc(), out UInt16 channel) && channelInfo.PossibleChannels.Max() >= channel)
+            if (Int32.TryParse(this.GetInputFunc(), out Int32 channel) && channelInfo.PossibleChannels.Max() >= channel)
             {
-                this._client.SetChannelAsync(channel).GetAwaiter().GetResult();
+                SetChannelRequest request = new SetChannelRequest()
+                {
+                    Channel = channel
+                };
+
+                this._client.SetChannelAsync(request).GetAwaiter().GetResult();
                 this.PrintOutputAction("channel set");
             }
             else
@@ -247,7 +271,7 @@ namespace PS.FritzBox.API.CMD
             this.ClearOutputAction();
             this.PrintEntry();
 
-            this.PrintOutputAction($"IP TV Optimized: {this._client.GetIPTVOptimizedAsync().GetAwaiter().GetResult()}");
+            this.PrintOutputAction($"IP TV Optimized: {this._client.X_GetIPTVOptimizedAsync().GetAwaiter().GetResult().IPTVoptimize}");
         }
     }
 }

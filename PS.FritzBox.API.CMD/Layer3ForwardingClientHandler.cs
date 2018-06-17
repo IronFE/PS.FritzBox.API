@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PS.FritzBox.API.TR64.Layer3Forwarding;
+using System;
 
 namespace PS.FritzBox.API.CMD
 {
@@ -8,10 +9,10 @@ namespace PS.FritzBox.API.CMD
     internal class Layer3ForwardingClientHandler : ClientHandler
     {
 
-        Layer3ForwardingClient _client;
+        Layer3ForwardingService _client;
         public Layer3ForwardingClientHandler(ConnectionSettings settings, Action<string> printOutput, Func<string> getInput, Action wait, Action clearOutput) : base(settings, printOutput, getInput, wait, clearOutput)
         {
-            _client = new Layer3ForwardingClient(settings);
+            _client = new Layer3ForwardingService(settings);
         }
 
         public override void Handle()
@@ -74,7 +75,11 @@ namespace PS.FritzBox.API.CMD
             this.ClearOutputAction();
             this.PrintEntry();
             this.PrintOutputAction("Connection Service:");
-            this._client.SetDefaultConnectionServiceAsync(this.GetInputFunc()).GetAwaiter().GetResult();
+            SetDefaultConnectionServiceRequest request = new SetDefaultConnectionServiceRequest()
+            {
+                DefaultConnectionService = this.GetInputFunc()                
+            };
+            this._client.SetDefaultConnectionServiceAsync(request).GetAwaiter().GetResult();
             this.PrintOutputAction("Default connection service set");
         }
 

@@ -1,4 +1,4 @@
-﻿using PS.FritzBox.API.WANDevice.WANConnectionDevice;
+﻿using PS.FritzBox.API.TR64.WANDevice.WANConnectionDevice.WANPPPConnection;
 using System;
 using System.Net;
 
@@ -6,11 +6,11 @@ namespace PS.FritzBox.API.CMD
 {
     public class WANPPPConnectionClientHandler : ClientHandler
     {
-        WANPPPConnectionClient _client;
+        WANPPPConnectionService _client;
 
         public WANPPPConnectionClientHandler(ConnectionSettings settings, Action<string> printOutput, Func<string> getInput, Action wait, Action clearOutput) : base(settings, printOutput, getInput, wait, clearOutput)
         {
-            _client = new WANPPPConnectionClient(settings);
+            _client = new WANPPPConnectionService(settings);
         }
 
         public override void Handle()
@@ -52,7 +52,7 @@ namespace PS.FritzBox.API.CMD
                             this.ForceTermination();
                             break;
                         case "2":
-                            this.RequestConnection();
+                            this.RequestConnection();                            
                             break;
                         case "3":
                             this.GetInfo();
@@ -81,26 +81,8 @@ namespace PS.FritzBox.API.CMD
                         case "11":
                             this.GetPortMappingNumberOfEntries();
                             break;
-                        case "12":
-                            this.GetGenericPortMappingEntry();
-                            break;
-                        case "14":
-                            this.GetPortMappings();
-                            break;
-                        case "13":
-                            this.GetSpecificPortMappingEntry();
-                            break;
                         case "17":
                             this.GetUserName();
-                            break;
-                        case "18":
-                            this.SetAutoDisconnectTimeSpan();
-                            break;
-                        case "15":
-                            this.AddPortMapping();
-                            break;
-                        case "16":                            
-                            this.DeletePortMapping();
                             break;
                         case "r":
                             break;
@@ -149,9 +131,8 @@ namespace PS.FritzBox.API.CMD
         {
             this.ClearOutputAction();
             this.PrintEntry();
-            var dnsServers = this._client.GetDNSServersAsync().GetAwaiter().GetResult();
-            foreach (var dnsServer in dnsServers)
-                this.PrintOutputAction(dnsServer.ToString());
+            var dnsServers = this._client.X_GetDNSServersAsync().GetAwaiter().GetResult();
+            this.PrintObject(dnsServers);
         }
 
         private void GetExternalIPAddress()
@@ -166,7 +147,7 @@ namespace PS.FritzBox.API.CMD
         {
             this.ClearOutputAction();
             this.PrintEntry();
-            var autoDisconnectSettings = this._client.GetAutoDisconnectTimeSpanAsync().GetAwaiter().GetResult();
+            var autoDisconnectSettings = this._client.X_GetAutoDisconnectTimeSpanAsync().GetAwaiter().GetResult();
             this.PrintObject(autoDisconnectSettings);
         }
 
@@ -207,90 +188,7 @@ namespace PS.FritzBox.API.CMD
             this.ClearOutputAction();
             this.PrintEntry();
             var portMappings = this._client.GetPortMappingNumberOfEntriesAsync().GetAwaiter().GetResult();
-            this.PrintOutputAction($"Portmappings: {portMappings}");
-        }
-
-        private void GetGenericPortMappingEntry()
-        {
-            this.ClearOutputAction();
-            this.PrintEntry();
-            this.PrintOutputAction("Index: ");
-            if (Int32.TryParse(this.GetInputFunc(), out Int32 index))
-            {
-                var entry = this._client.GetGenericPortMappingEntryAsync(index).GetAwaiter().GetResult();
-                this.PrintObject(entry);
-            }
-            else
-                this.PrintOutputAction("Invalid input");
-        }
-
-        /// <summary>
-        /// Method to get the port mappings
-        /// </summary>
-        private void GetPortMappings()
-        {
-            this.ClearOutputAction();
-            this.PrintEntry();
-            var entries = this._client.GetPortMappingEntriesAsync().GetAwaiter().GetResult();
-            foreach(var entry in entries)
-            {
-                this.PrintOutputAction($"Entry: {entries.IndexOf(entry)}");
-                this.PrintObject(entry);
-            }
-        }
-
-        private void AddPortMapping()
-        {
-            this.ClearOutputAction();
-            this.PrintEntry();
-            PortMappingEntry entry = new PortMappingEntry();
-            this.PrintOutputAction("Remote host:");
-            if (IPAddress.TryParse(this.GetInputFunc(), out IPAddress remote))
-                entry.RemoteHost = remote;
-            this.PrintOutputAction("External port:");
-            entry.ExternalPort = UInt16.TryParse(this.GetInputFunc(), out UInt16 res) ? res : (ushort)1;
-            this.PrintOutputAction("Internal host:");
-            entry.InternalHost = IPAddress.TryParse(this.GetInputFunc(), out IPAddress internalHost) ? internalHost : IPAddress.None;
-            this.PrintOutputAction("internal port:");
-            entry.InternalPort = UInt16.TryParse(this.GetInputFunc(), out UInt16 res2) ? res2 : (ushort)1;
-            this.PrintOutputAction("Protocol (UDP, TCP, ESP, GRE)");
-            entry.PortMappingProtocol = (PortMappingProtocol)Enum.Parse(typeof(PortMappingProtocol), this.GetInputFunc());          
-            entry.Enabled = true;
-            this.PrintOutputAction("Description:");
-            entry.Description = this.GetInputFunc();
-            this._client.AddPortMappingAsync(entry).GetAwaiter().GetResult();
-            this.PrintOutputAction("Port mapping added");
-        }
-
-        private void DeletePortMapping()
-        {
-            this.ClearOutputAction();
-            this.PrintEntry();
-            this.PrintOutputAction("RemoteHost host:");
-            IPAddress remoteHost = IPAddress.TryParse(this.GetInputFunc(), out IPAddress internalHost) ? internalHost :null;
-            this.PrintOutputAction("external port:");
-            ushort externalPort = UInt16.TryParse(this.GetInputFunc(), out UInt16 res2) ? res2 : (ushort)1;
-            this.PrintOutputAction("Protocol (UDP, TCP, ESP, GRE)");
-            var pPortMappingProtocol = (PortMappingProtocol)Enum.Parse(typeof(PortMappingProtocol), this.GetInputFunc());
-
-            this._client.DeletePortMappingAsync(remoteHost, externalPort, pPortMappingProtocol).GetAwaiter().GetResult();
-            this.PrintOutputAction("Port mapping deleted");
-        }
-
-        private void GetSpecificPortMappingEntry()
-        {
-            this.ClearOutputAction();
-            this.PrintEntry();
-
-            this.PrintOutputAction("RemoteHost host:");
-            IPAddress remoteHost = IPAddress.TryParse(this.GetInputFunc(), out IPAddress internalHost) ? internalHost : null;
-            this.PrintOutputAction("external port:");
-            ushort externalPort = UInt16.TryParse(this.GetInputFunc(), out UInt16 res2) ? res2 : (ushort)1;
-            this.PrintOutputAction("Protocol (UDP, TCP, ESP, GRE)");
-            var pPortMappingProtocol = (PortMappingProtocol)Enum.Parse(typeof(PortMappingProtocol), this.GetInputFunc());
-
-            var entry = _client.GetSpecificPortMappingEntryAsync(remoteHost, externalPort, pPortMappingProtocol).GetAwaiter().GetResult();
-            this.PrintObject(entry);
+            this.PrintObject(portMappings);
         }
 
         private void GetUserName()
@@ -299,22 +197,8 @@ namespace PS.FritzBox.API.CMD
             this.PrintEntry();
 
             var userName = this._client.GetUserNameAsync().GetAwaiter().GetResult();
-            this.PrintOutputAction($"UserName: {userName}");
+            this.PrintObject(userName);
         }
-
-        private void SetAutoDisconnectTimeSpan()
-        {
-            this.ClearOutputAction();
-            this.PrintEntry();
-
-            AutoDisconnectTimeSpan span = new AutoDisconnectTimeSpan();
-            this.PrintOutputAction("Enable? (y / n)");
-            span.PreventionEnable = this.GetInputFunc() == "y";
-            this.PrintOutputAction("Hour:");
-            span.PreventionHour = ushort.TryParse(this.GetInputFunc(), out ushort hour) ? hour : (ushort)0;
-
-            this._client.SetAutoDisconnectTimeSpanAsync(span).GetAwaiter().GetResult();
-            this.PrintOutputAction("AutoDisconnectTime set");
-        }
+        
     }
 }
