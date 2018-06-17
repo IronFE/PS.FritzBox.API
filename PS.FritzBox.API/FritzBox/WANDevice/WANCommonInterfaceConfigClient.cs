@@ -11,7 +11,7 @@ namespace PS.FritzBox.API.WANDevice
     /// <summary>
     /// client for wan common interface config service
     /// </summary>
-    public class WANCommonInterfaceConfigClient : FritzTR64Client
+    public class WANCommonInterfaceConfigClient : FritzServiceBase
     {
         #region Construction / Destruction
         

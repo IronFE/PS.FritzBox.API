@@ -11,7 +11,7 @@ namespace PS.FritzBox.API
     /// <summary>
     /// client for user interface service
     /// </summary>
-    public class UserInterfaceClient : FritzTR64Client
+    public class UserInterfaceClient : FritzServiceBase
     {
         #region Construction / Destruction
         

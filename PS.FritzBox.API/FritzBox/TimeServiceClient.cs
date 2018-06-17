@@ -12,7 +12,7 @@ namespace PS.FritzBox.API
     /// <summary>
     /// client for time service
     /// </summary>
-    public class TimeServiceClient : FritzTR64Client
+    public class TimeServiceClient : FritzServiceBase
     {
         #region Construction / Destruction
         

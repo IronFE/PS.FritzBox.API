@@ -12,7 +12,7 @@ namespace PS.FritzBox.API.WANDevice.WANConnectionDevice
     /// <summary>
     /// client for wan ppp connection service
     /// </summary>
-    public class WANPPPConnectionClient : FritzTR64Client
+    public class WANPPPConnectionClient : FritzServiceBase
     {
         #region Construction / Destruction
         

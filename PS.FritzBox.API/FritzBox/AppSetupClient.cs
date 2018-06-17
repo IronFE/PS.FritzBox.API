@@ -11,7 +11,7 @@ namespace PS.FritzBox.API
     /// <summary>
     /// client for app setup service
     /// </summary>
-    public class AppSetupClient : FritzTR64Client
+    public class AppSetupClient : FritzServiceBase
     {
         #region COnstruction / Destruction
         

@@ -12,7 +12,7 @@ namespace PS.FritzBox.API.LANDevice
     /// <summary>
     /// client for hosts service
     /// </summary>
-    public class HostsClient : FritzTR64Client
+    public class HostsClient : FritzServiceBase
     {
         #region Construction / Destruction
         

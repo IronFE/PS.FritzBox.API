@@ -11,7 +11,7 @@ namespace PS.FritzBox.API
     /// <summary>
     /// client for lan config security service
     /// </summary>
-    public class LANConfigSecurityClient : FritzTR64Client
+    public class LANConfigSecurityClient : FritzServiceBase
     {
         #region Construction / Destruction
         

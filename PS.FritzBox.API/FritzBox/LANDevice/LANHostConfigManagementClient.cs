@@ -12,7 +12,7 @@ namespace PS.FritzBox.API.LANDevice
     /// <summary>
     /// client for LANHostConfigManagement service
     /// </summary>
-    public class LANHostConfigManagementClient : FritzTR64Client
+    public class LANHostConfigManagementClient : FritzServiceBase
     {
         #region Construction / Destruction
 

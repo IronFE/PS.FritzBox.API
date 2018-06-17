@@ -12,7 +12,7 @@ namespace PS.FritzBox.API
     /// <summary>
     /// client for device config service
     /// </summary>
-    public class DeviceConfigClient : FritzTR64Client
+    public class DeviceConfigClient : FritzServiceBase
     {
         #region COnstruction / Destruction
         

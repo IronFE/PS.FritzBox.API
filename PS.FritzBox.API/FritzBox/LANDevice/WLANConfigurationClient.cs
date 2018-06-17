@@ -12,7 +12,7 @@ namespace PS.FritzBox.API.LANDevice
     /// <summary>
     /// client for wlan configuration service 
     /// </summary>
-    public class WLANConfigurationClient : FritzTR64Client
+    public class WLANConfigurationClient : FritzServiceBase
     {
         #region Construction / Destruction
 

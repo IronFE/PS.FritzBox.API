@@ -9,7 +9,7 @@ namespace PS.FritzBox.API.Base
     /// <summary>
     /// base class for fritzbox tr64 services
     /// </summary>
-    public abstract class FrritzServiceBase
+    public abstract class FritzServiceBase
     {
         #region Construction / Destruction
 
@@ -18,7 +18,7 @@ namespace PS.FritzBox.API.Base
         /// </summary>
         /// <param name="url">the service url</param>
         /// <param name="timeout">the timeout in milliseconds</param>
-        public FrritzServiceBase(string url, int timeout)
+        public FritzServiceBase(string url, int timeout)
         {
             this.ConnectionSettings.BaseUrl = url;
             this.ConnectionSettings.Timeout = timeout;
@@ -30,7 +30,7 @@ namespace PS.FritzBox.API.Base
         /// <param name="url">the base url</param>
         /// <param name="timeout">the timeout in milliseconds</param>
         /// <param name="username">the connection user name</param>
-        public FrritzServiceBase(string url, int timeout, string username) : this(url, timeout)
+        public FritzServiceBase(string url, int timeout, string username) : this(url, timeout)
         {
             this.ConnectionSettings.UserName = username;
         }
@@ -42,7 +42,7 @@ namespace PS.FritzBox.API.Base
         /// <param name="timeout">the timeout in milliseconds</param>
         /// <param name="username">the connection user name</param>
         /// <param name="password">the connection password</param>
-        public FrritzServiceBase(string url, int timeout, string username, string password) : this(url, timeout, username)
+        public FritzServiceBase(string url, int timeout, string username, string password) : this(url, timeout, username)
         {
             this.ConnectionSettings.Password = password;
         }
@@ -51,7 +51,7 @@ namespace PS.FritzBox.API.Base
         /// Constructor for tr064 service
         /// </summary>
         /// <param name="connectionSettings">the connection settings</param>
-        public FrritzServiceBase(ConnectionSettings connectionSettings)
+        public FritzServiceBase(ConnectionSettings connectionSettings)
         {
             this.ConnectionSettings = connectionSettings;
         }

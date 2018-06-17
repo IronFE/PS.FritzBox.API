@@ -12,7 +12,7 @@ namespace PS.FritzBox.API
     /// <summary>
     /// client for layer3 forwarding service
     /// </summary>
-    public class Layer3ForwardingClient : FritzTR64Client
+    public class Layer3ForwardingClient : FritzServiceBase
     {
         #region Construction / Destruction
         
