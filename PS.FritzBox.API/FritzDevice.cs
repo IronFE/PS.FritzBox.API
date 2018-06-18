@@ -1,5 +1,6 @@
 ﻿using PS.FritzBox.API.Base;
 using PS.FritzBox.API.TR64.DeviceInfo;
+using PS.FritzBox.API.TR64.LANConfigSecurity;
 using PS.FritzBox.API.TR64.LANDevice;
 using PS.FritzBox.API.TR64.WANDevice;
 using PS.FritzBox.API.TR64.WANDevice.WANConnectionDevice;
@@ -49,12 +50,12 @@ namespace PS.FritzBox.API
                                                  .Skip(1)
                                                  .Select(line => line.Split(new[] { ":" }, 2, StringSplitOptions.None))
                                                  .Where(parts => parts.Length == 2)
-                .                                 ToDictionary(parts => parts[0].ToLowerInvariant().Trim(), parts => parts[1].Trim());
+                .ToDictionary(parts => parts[0].ToLowerInvariant().Trim(), parts => parts[1].Trim());
 
             if (values.ContainsKey("location"))
             {
                 string location = values["location"];
-                
+
                 Uri uri = Uri.TryCreate(location, UriKind.Absolute, out Uri locationUri) ? locationUri : new UriBuilder() { Scheme = "unknown", Host = location }.Uri;
                 this.Port = uri.Port;
                 return uri;
@@ -118,20 +119,6 @@ namespace PS.FritzBox.API
         /// </summary>
         public string UDN { get; internal set; }
 
-        /// <summary>
-        /// the list of valid services
-        /// </summary>
-        private List<Type> _validServices = new List<Type>();
-
-        /// <summary>
-        /// Method to check if the device contains a given service
-        /// </summary>
-        /// <typeparam name="T">the service type parameter</typeparam>
-        /// <returns>true if the device containes the given service</returns>
-        public bool ContainsService<T>()
-        {
-            return this._validServices.Contains(typeof(T));
-        }
 
         /// <summary>
         /// Method to get the base url
@@ -146,6 +133,43 @@ namespace PS.FritzBox.API
         }
 
         /// <summary>
+        /// Method to check if anonymous login is enabled
+        /// </summary>
+        /// <returns>true if anonymous login is enabled</returns>
+        public async Task<bool> GetAnonymousLoginAsync()
+        {
+            string baseUrl = await this.GetBaseUrl();
+            X_GetAnonymousLoginResult result = await new LANConfigSecurityService(baseUrl, 10000).X_GetAnonymousLoginAsync();
+            return result.AnonymousLoginEnabled;
+        }
+
+        /// <summary>
+        /// Method to get a fritz service
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns>a new instance of the fritz service</returns>
+        /// <exception cref="InvalidOperationException">throws invalid operation exception if the type is not a FritzService</exception>
+        public async Task<T> GetFritzServiceAsync<T>()
+        {
+            // validate the type
+            this.ValidateIsServiceType(typeof(T));
+
+            string baseUrl = await this.GetBaseUrl();
+            return (T)Activator.CreateInstance(typeof(T), new object[] { baseUrl, 10000 });
+        }
+
+        /// <summary>
+        /// Method to validate if the service is from type FritzService
+        /// </summary>
+        /// <param name="type">the type to check</param>
+        /// <exception cref="InvalidOperationException">throws invalid operation exception if the type is not a FritzService</exception>
+        private void ValidateIsServiceType(Type type)
+        {
+            if (!typeof(FritzServiceBase).IsAssignableFrom(type))
+                throw new InvalidOperationException("Given type is not a FritzService.");
+        }
+
+        /// <summary>
         /// Method to parse the fritz tr64 description
         /// </summary>
         /// <param name="data">the description data</param>
@@ -153,7 +177,7 @@ namespace PS.FritzBox.API
         {
             XDocument document = XDocument.Parse(data);
             XElement deviceRoot = this.GetElement(document.Root, "device");
-            
+
             if (deviceRoot != null)
             {
                 // read device info
@@ -167,7 +191,7 @@ namespace PS.FritzBox.API
                 this.UDN = this.GetElementValue(deviceRoot, "UDN");
             }
         }
-               
+
         /// <summary>
         /// Mehtod to get an element
         /// </summary>
@@ -200,6 +224,6 @@ namespace PS.FritzBox.API
         {
             return parent.Elements(parent.Document.Root.Name.Namespace + key);
         }
-               
+
     }
 }

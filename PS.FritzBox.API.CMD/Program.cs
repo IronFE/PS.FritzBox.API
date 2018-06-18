@@ -1,5 +1,6 @@
 ﻿using PS.FritzBox.API;
 using PS.FritzBox.API.Base;
+using PS.FritzBox.API.TR64.X_VoIP;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -86,6 +87,12 @@ namespace PS.FritzBox.API.CMD
             ConnectionSettings settings = GetConnectionSettings();
             settings.BaseUrl = device.GetBaseUrl().GetAwaiter().GetResult();
             InitClientHandler(settings);
+
+            var service = device.GetFritzServiceAsync<IGD.WANDevice.WANCommonInterfaceConfig.WANCommonInterfaceConfigService>().GetAwaiter().GetResult();
+
+            var result = service.GetCommonLinkPropertiesAsync().GetAwaiter().GetResult();
+            Console.WriteLine(result.WANAccessType);
+            Console.Read();
         }
 
         /// <summary>
