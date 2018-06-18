@@ -1,0 +1,15 @@
+using System;
+
+namespace PS.FritzBox.API.WANDevice.WANConnectionDevice
+{
+    /// <summary>
+    /// request object for SetUserName
+    /// </summary>
+    public class SetUserNameRequest
+    {
+        /// <summary>
+        /// gets or sets the UserName
+        /// </summary>
+        public string UserName { get; set;}
+    }
+}
