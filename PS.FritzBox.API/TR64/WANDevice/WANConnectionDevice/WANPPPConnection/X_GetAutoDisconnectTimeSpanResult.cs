@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace PS.FritzBox.API.TR64.WANDevice.WANConnectionDevice.WANPPPConnection
+namespace PS.FritzBox.API.TR64.WANDevice.WANConnectionDevice
 {
     /// <summary>
     /// result object for X_GetAutoDisconnectTimeSpan

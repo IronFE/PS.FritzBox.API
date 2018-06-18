@@ -69,11 +69,6 @@ namespace PS.FritzBox.API.TR64.UserInterface
         /// gets the request namespace
         /// </summary>
         protected override string RequestNameSpace => "urn:dslforum-org:service:UserInterface:1";
-		
-        /// <summary>
-        /// gets the connection settings
-        /// </summary>
-        public ConnectionSettings ConnectionSettings { get; set; } = new ConnectionSettings();
 
         #endregion
 

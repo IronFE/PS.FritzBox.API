@@ -70,11 +70,6 @@ namespace PS.FritzBox.API.TR64.LANDevice.LANEthernetInterfaceConfig
         /// </summary>
         protected override string RequestNameSpace => "urn:dslforum-org:service:LANEthernetInterfaceConfig:1";
 		
-        /// <summary>
-        /// gets the connection settings
-        /// </summary>
-        public ConnectionSettings ConnectionSettings { get; set; } = new ConnectionSettings();
-
         #endregion
 
         #region Methods

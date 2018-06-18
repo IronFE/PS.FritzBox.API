@@ -69,11 +69,6 @@ namespace PS.FritzBox.API.TR64.Time
         /// gets the request namespace
         /// </summary>
         protected override string RequestNameSpace => "urn:dslforum-org:service:Time:1";
-		
-        /// <summary>
-        /// gets the connection settings
-        /// </summary>
-        public ConnectionSettings ConnectionSettings { get; set; } = new ConnectionSettings();
 
         #endregion
 

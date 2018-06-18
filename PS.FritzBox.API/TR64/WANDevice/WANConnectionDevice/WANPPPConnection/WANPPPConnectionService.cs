@@ -1,4 +1,5 @@
 using PS.FritzBox.API.Base;
+using PS.FritzBox.API.WANDevice.WANConnectionDevice;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -83,10 +84,10 @@ namespace PS.FritzBox.API.TR64.WANDevice.WANConnectionDevice.WANPPPConnection
         /// method to invoke GetInfo on service
         /// </summary>
         /// <returns>the result of the action GetInfo</returns>
-        public async Task<GetInfoResult> GetInfoAsync()
+        public async Task<GetWANPPPConnectionInfoRequest> GetWANPPPConnectionInfoAsync()
         {
             XDocument soapResult = await base.InvokeAsync("GetInfo", null);
-            return new GetInfoResult(soapResult);
+            return new GetWANPPPConnectionInfoRequest(soapResult);
         }
 
         /// <summary>

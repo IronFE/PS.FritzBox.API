@@ -1,6 +1,6 @@
 using System;
 
-namespace PS.FritzBox.API.TR64.WANDevice.WANConnectionDevice.WANPPPConnection
+namespace PS.FritzBox.API.TR64.WANDevice.WANConnectionDevice
 {
     /// <summary>
     /// request object for X_SetAutoDisconnectTimeSpan

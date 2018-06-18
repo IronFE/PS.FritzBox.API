@@ -7,12 +7,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace PS.FritzBox.API.TR64.WANDevice.WANConnectionDevice.WANDSLLinkConfig
+namespace PS.FritzBox.API.TR64.WANDevice.WANConnectionDevice
 {
     /// <summary>
     /// client proxy class for WANDSLLinkConfig service
     /// </summary>
-    public class WANDSLLinkConfigService : FritzServiceBase 
+    public class WANDSLLinkConfigService : FritzServiceBase, IWANDSLLinkConfigService
     {
         #region Construction / Destruction
 
@@ -84,10 +84,10 @@ namespace PS.FritzBox.API.TR64.WANDevice.WANConnectionDevice.WANDSLLinkConfig
         /// method to invoke GetInfo on service
         /// </summary>
         /// <returns>the result of the action GetInfo</returns>
-        public async Task<GetInfoResult> GetInfoAsync()
+        public async Task<GetWANDSLLinkConfigInfoResult> GetWANDSLLinkConfigInfoAsync()
         {
             XDocument soapResult = await base.InvokeAsync("GetInfo", null);
-            return new GetInfoResult(soapResult);
+            return new GetWANDSLLinkConfigInfoResult(soapResult);
         }
 
         /// <summary>

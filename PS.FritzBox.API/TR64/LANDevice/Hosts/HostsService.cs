@@ -70,11 +70,6 @@ namespace PS.FritzBox.API.TR64.LANDevice.Hosts
         /// </summary>
         protected override string RequestNameSpace => "urn:dslforum-org:service:Hosts:1";
 		
-        /// <summary>
-        /// gets the connection settings
-        /// </summary>
-        public ConnectionSettings ConnectionSettings { get; set; } = new ConnectionSettings();
-
         #endregion
 
         #region Methods

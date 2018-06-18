@@ -130,6 +130,7 @@ namespace PS.FritzBox.API
 
                         // create device by endpoint data
                         FritzDevice device = FritzDevice.ParseResponse(result.RemoteEndPoint.Address, response);
+                       
                         if (!discovered.ContainsKey(result.RemoteEndPoint.Address))
                         {
                             if (device != null && device.Location != null && device.Location.Scheme != "unknown")

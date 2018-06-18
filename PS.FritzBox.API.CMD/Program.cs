@@ -88,7 +88,7 @@ namespace PS.FritzBox.API.CMD
             settings.BaseUrl = device.GetBaseUrl().GetAwaiter().GetResult();
             InitClientHandler(settings);
 
-            var service = device.GetFritzServiceAsync<IGD.WANDevice.WANCommonInterfaceConfig.WANCommonInterfaceConfigService>().GetAwaiter().GetResult();
+            var service = device.GetFritzServiceAsync<IGD.WANDevice.WANCommonInterfaceConfigService>().GetAwaiter().GetResult();
 
             var result = service.GetCommonLinkPropertiesAsync().GetAwaiter().GetResult();
             Console.WriteLine(result.WANAccessType);
