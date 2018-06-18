@@ -13,7 +13,7 @@ namespace PS.FritzBox.API.IGD.WANDevice.WANConnectionDevice
     /// <summary>
     /// client proxy class for WANIPConnection service
     /// </summary>
-    public class WANIPConnectionService : FritzServiceBase
+    public class WANIPConnectionService : FritzServiceBase, IWANConnectionServiceInterface
     {
         #region Construction / Destruction
 
