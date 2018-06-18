@@ -1,4 +1,4 @@
-﻿using PS.FritzBox.API.TR64.WANDevice.WANConnectionDevice.WANIPConnection;
+﻿using PS.FritzBox.API.TR64.WANDevice.WANConnectionDevice;
 using System;
 using System.Net;
 

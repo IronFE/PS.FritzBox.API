@@ -1,4 +1,4 @@
-﻿using PS.FritzBox.API.TR64.WANDevice.WANCommonInterfaceConfig;
+﻿using PS.FritzBox.API.TR64.WANDevice;
 using System;
 
 namespace PS.FritzBox.API.CMD

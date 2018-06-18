@@ -83,10 +83,10 @@ namespace PS.FritzBox.API.TR64.WANDevice
         /// method to invoke GetInfo on service
         /// </summary>
         /// <returns>the result of the action GetInfo</returns>
-        public async Task<GetInfoResult> GetInfoAsync()
+        public async Task<GetWANDLSInterfaceInfoResult> GetWANDLSInterfaceInfoAsync()
         {
             XDocument soapResult = await base.InvokeAsync("GetInfo", null);
-            return new GetInfoResult(soapResult);
+            return new GetWANDLSInterfaceInfoResult(soapResult);
         }
 
         /// <summary>
