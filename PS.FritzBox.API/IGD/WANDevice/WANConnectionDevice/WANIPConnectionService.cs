@@ -1,5 +1,6 @@
 using PS.FritzBox.API.Base;
 using PS.FritzBox.API.WANDevice.WANConnectionDevice;
+using PS.FritzBox.WANDevice.WANConnectionDevice;
 using System;
 using System.Collections.Generic;
 using System.Linq;
