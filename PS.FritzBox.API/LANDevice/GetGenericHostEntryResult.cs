@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace PS.FritzBox.API.TR64.LANDevice
+namespace PS.FritzBox.API.LANDevice
 {
     /// <summary>
     /// result object for GetGenericHostEntry
