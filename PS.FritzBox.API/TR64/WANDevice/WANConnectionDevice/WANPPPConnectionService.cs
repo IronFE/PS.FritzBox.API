@@ -12,7 +12,7 @@ namespace PS.FritzBox.API.TR64.WANDevice.WANConnectionDevice.WANPPPConnection
     /// <summary>
     /// client proxy class for WANPPPConnection service
     /// </summary>
-    public class WANPPPConnectionService : FritzServiceBase, IWANConnectionServiceInterface
+    public class WANPPPConnectionService : FritzServiceBase, IWANConnectionService
     {
         #region Construction / Destruction
 

@@ -210,7 +210,7 @@ namespace PS.FritzBox.API.TR64.X_VoIP
         /// </summary>
         /// <param name="request">the request for the action X_AVM-DE_GetClient2</param>
         /// <returns>the result of the action X_AVM-DE_GetClient2</returns>
-        public async Task<X_GetClient2Result> X_GetClient2Async(X_GetClient2Request request)
+        public async Task<X_GetClient2Result> X_GetClient2Async(X_GetClientRequest request)
         {
             List<SOAP.SoapRequestParameter> parameters = new List<SOAP.SoapRequestParameter>()
             {
@@ -258,7 +258,7 @@ namespace PS.FritzBox.API.TR64.X_VoIP
         /// </summary>
         /// <param name="request">the request for the action X_AVM-DE_GetClient3</param>
         /// <returns>the result of the action X_AVM-DE_GetClient3</returns>
-        public async Task<X_GetClient3Result> X_GetClient3Async(X_GetClient3Request request)
+        public async Task<X_GetClient3Result> X_GetClient3Async(X_GetClientRequest request)
         {
             List<SOAP.SoapRequestParameter> parameters = new List<SOAP.SoapRequestParameter>()
             {
