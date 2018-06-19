@@ -1,4 +1,5 @@
 using PS.FritzBox.API.Base;
+using PS.FritzBox.API.TR64;
 using System;
 using System.Collections.Generic;
 using System.Linq;

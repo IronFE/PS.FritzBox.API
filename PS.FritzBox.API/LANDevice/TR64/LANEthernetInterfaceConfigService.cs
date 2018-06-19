@@ -1,4 +1,5 @@
 using PS.FritzBox.API.Base;
+using PS.FritzBox.API.TR64;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -91,10 +92,10 @@ namespace PS.FritzBox.API.LANDevice.TR64
         /// method to invoke GetInfo on service
         /// </summary>
         /// <returns>the result of the action GetInfo</returns>
-        public async Task<GetInfoResult> GetInfoAsync()
+        public async Task<LANEthernetInterfaceConfigResult> GetInfoAsync()
         {
             XDocument soapResult = await base.InvokeAsync("GetInfo", null);
-            return new GetInfoResult(soapResult);
+            return new LANEthernetInterfaceConfigResult(soapResult);
         }
 
         /// <summary>

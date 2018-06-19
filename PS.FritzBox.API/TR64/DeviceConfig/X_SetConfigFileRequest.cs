@@ -1,6 +1,6 @@
 using System;
 
-namespace PS.FritzBox.API.TR64.DeviceConfig
+namespace PS.FritzBox.API.TR64
 {
     /// <summary>
     /// request object for X_SetConfigFile

@@ -7,14 +7,14 @@ namespace PS.FritzBox.API.LANDevice.TR64
     /// <summary>
     /// result object for GetInfo
     /// </summary>
-    public class GetInfoResult
+    public class LANEthernetInterfaceConfigResult
     {
         #region construction / destruction
 
         /// <summary>
         /// constructor for parsing soap result
         /// </summary>	    
-        internal GetInfoResult(XDocument soapresult)
+        internal LANEthernetInterfaceConfigResult(XDocument soapresult)
         {
             this.Enable = soapresult.Descendants("NewEnable").First().Value == "1";
             this.Status = soapresult.Descendants("NewStatus").First().Value;

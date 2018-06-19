@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace PS.FritzBox.API.TR64.DeviceConfig
+namespace PS.FritzBox.API.TR64
 {
     /// <summary>
     /// client proxy class for DeviceConfig service

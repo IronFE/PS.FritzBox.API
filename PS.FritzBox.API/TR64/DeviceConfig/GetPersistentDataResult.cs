@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace PS.FritzBox.API.TR64.DeviceConfig
+namespace PS.FritzBox.API.TR64
 {
     /// <summary>
     /// result object for GetPersistentData

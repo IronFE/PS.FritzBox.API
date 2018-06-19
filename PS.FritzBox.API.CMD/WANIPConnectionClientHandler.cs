@@ -1,4 +1,5 @@
 ﻿using PS.FritzBox.API.TR64.WANDevice.WANConnectionDevice;
+using PS.FritzBox.API.WANDevice.WANConnectionDevice.TR64;
 using System;
 using System.Net;
 

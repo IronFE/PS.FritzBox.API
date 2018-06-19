@@ -1,6 +1,6 @@
 using System;
 
-namespace PS.FritzBox.API.TR64.Layer3Forwarding
+namespace PS.FritzBox.API.TR64
 {
     /// <summary>
     /// request object for SetDefaultConnectionService
