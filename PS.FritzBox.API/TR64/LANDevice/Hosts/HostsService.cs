@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace PS.FritzBox.API.TR64.LANDevice.Hosts
+namespace PS.FritzBox.API.TR64.LANDevice
 {
     /// <summary>
     /// client proxy class for Hosts service

@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace PS.FritzBox.API.TR64
+namespace PS.FritzBox.API
 {
     /// <summary>
     /// result object for X_GetConfigFile

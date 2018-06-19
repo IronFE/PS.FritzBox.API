@@ -1,6 +1,6 @@
 using System;
 
-namespace PS.FritzBox.API.TR64.LANDevice.Hosts
+namespace PS.FritzBox.API.TR64.LANDevice
 {
     /// <summary>
     /// request object for GetGenericHostEntry
