@@ -15,67 +15,89 @@ namespace PS.FritzBox.API.CMD
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Searching for devices...");
-            IEnumerable<FritzDevice> devices = GetDevices().GetAwaiter().GetResult();
+            //Console.WriteLine("Searching for devices...");
+            //IEnumerable<FritzDevice> devices = GetDevices().GetAwaiter().GetResult();
 
+            //if (devices.Count() > 0)
+            //{
+            //    Console.WriteLine($"Found {devices.Count()} devices.");
+            //    string input = string.Empty;
+            //    int deviceIndex = -1;
+            //    do
+            //    {
+            //        int counter = 0;
+            //        foreach (FritzDevice device in devices)
+            //        {
+            //            Console.WriteLine($"{counter} - {device.ModelName}");
+            //        }
+            //        counter++;
+
+            //        input = Console.ReadLine();
+
+            //    } while (!Int32.TryParse(input, out deviceIndex) && (deviceIndex < 0 || deviceIndex >= devices.Count()));
+
+            //    FritzDevice selected = devices.Skip(deviceIndex).First();
+
+
+            //    Configure(selected);
+
+            //    do
+            //    {
+            //        Console.Clear();
+            //        Console.WriteLine(" 1 - DeviceInfo");
+            //        Console.WriteLine(" 2 - DeviceConfig");
+            //        Console.WriteLine(" 3 - LanConfigSecurity");
+            //        Console.WriteLine(" 4 - LANEthernetInterface");
+            //        Console.WriteLine(" 5 - LANHostConfigManagement");
+            //        Console.WriteLine(" 6 . WANCommonInterfaceConfig");
+            //        Console.WriteLine(" 7 - WANIPPConnection");
+            //        Console.WriteLine(" 8 - WANPPPConnection");
+            //        Console.WriteLine(" 9 - AppSetup");
+            //        Console.WriteLine("10 - Layer3Forwarding");
+            //        Console.WriteLine("11 - UserInterface");
+            //        Console.WriteLine("12 - WLANConfiguration");
+
+            //        Console.WriteLine("r - Reinitialize");
+            //        Console.WriteLine("q - Exit");
+
+            //        input = Console.ReadLine();
+            //        if (_clientHandlers.ContainsKey(input))
+            //            _clientHandlers[input].Handle();
+            //        else if (input.ToLower() == "r")
+            //            Configure(selected);
+            //        else if (input.ToLower() != "q")
+            //            Console.WriteLine("invalid choice");
+
+            //    } while (input.ToLower() != "q");
+            //}
+            //else
+            //{
+            //    Console.WriteLine("No devices found");
+            //    Console.ReadLine();
+            //}
+
+            Reboot();
+        }
+
+        private async void Reboot()
+        {
+            DeviceLocator locator = new DeviceLocator();            
+            var devices = await locator.DiscoverAsync();
             if (devices.Count() > 0)
             {
-                Console.WriteLine($"Found {devices.Count()} devices.");
-                string input = string.Empty;
-                int deviceIndex = -1;
-                do
+                var device = devices.First();
+                
+                ConnectionSettings settings = new ConnectionSettings()
                 {
-                    int counter = 0;
-                    foreach (FritzDevice device in devices)
-                    {
-                        Console.WriteLine($"{counter} - {device.ModelName}");
-                    }
-                    counter++;
+                    UserName = "inflames2k",
+                    Password = "secret"
+                };
 
-                    input = Console.ReadLine();
-
-                } while (!Int32.TryParse(input, out deviceIndex) && (deviceIndex < 0 || deviceIndex >= devices.Count()));
-
-                FritzDevice selected = devices.Skip(deviceIndex).First();
-
-
-                Configure(selected);
-
-                do
-                {
-                    Console.Clear();
-                    Console.WriteLine(" 1 - DeviceInfo");
-                    Console.WriteLine(" 2 - DeviceConfig");
-                    Console.WriteLine(" 3 - LanConfigSecurity");
-                    Console.WriteLine(" 4 - LANEthernetInterface");
-                    Console.WriteLine(" 5 - LANHostConfigManagement");
-                    Console.WriteLine(" 6 . WANCommonInterfaceConfig");
-                    Console.WriteLine(" 7 - WANIPPConnection");
-                    Console.WriteLine(" 8 - WANPPPConnection");
-                    Console.WriteLine(" 9 - AppSetup");
-                    Console.WriteLine("10 - Layer3Forwarding");
-                    Console.WriteLine("11 - UserInterface");
-                    Console.WriteLine("12 - WLANConfiguration");
-
-                    Console.WriteLine("r - Reinitialize");
-                    Console.WriteLine("q - Exit");
-
-                    input = Console.ReadLine();
-                    if (_clientHandlers.ContainsKey(input))
-                        _clientHandlers[input].Handle();
-                    else if (input.ToLower() == "r")
-                        Configure(selected);
-                    else if (input.ToLower() != "q")
-                        Console.WriteLine("invalid choice");
-
-                } while (input.ToLower() != "q");
-            }
-            else
-            {
-                Console.WriteLine("No devices found");
-                Console.ReadLine();
-            }
+            var client = await device.GetFritzServiceAsync<DeviceConfigService>();
+                client.ConnectionSettings = settings;
+            await client.RebootAsync();
         }
+    }
 
         static async Task<IEnumerable<FritzDevice>> GetDevices()
         {
